@@ -29,10 +29,14 @@ class AceServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+        $namespace = FANCY_NAME;
+        $wordpress = $this->app["$namespace.wordpress"];
+
         if(Wordpress::available()) {
-            \Event::listen('fancy::scripts.initialize', function() {
+            \Event::listen('fancy::scripts.initialize', function() use($wordpress) {
                 global $pagenow;
-                if(!(Wordpress::is_admin() && ($pagenow === 'post.php' || $pagenow === 'post-new.php'))) return;
+
+                if(!($wordpress->is_admin() && ($pagenow === 'post.php' || $pagenow === 'post-new.php'))) return;
 
                 return array(
                     'ace' => array(
