@@ -1,6 +1,7 @@
 <?php namespace Fancy\Ace;
 
 use Illuminate\Support\ServiceProvider;
+use Fancy\Core\Support\Wordpress;
 
 class AceServiceProvider extends ServiceProvider {
 
@@ -28,26 +29,28 @@ class AceServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-        \Event::listen('fancy::scripts.initialize', function() {
-            global $pagenow;
-            if(!(is_admin() && ($pagenow === 'post.php' || $pagenow === 'post-new.php'))) return;
+        if(Wordpress::available()) {
+            \Event::listen('fancy::scripts.initialize', function() {
+                global $pagenow;
+                if(!(Wordpress::is_admin() && ($pagenow === 'post.php' || $pagenow === 'post-new.php'))) return;
 
-            return array(
-                'ace' => array(
-                    'src' => 'public/packages/fancy/ace/js/vendor/ace/ace.js',
-                    'in_admin' => true
-                ),
-                'ace-textarea' => array(
-                    'src' => 'public/packages/fancy/ace/js/vendor/jquery-ace-textarea.js',
-                    'in_admin' => true
-                ),
+                return array(
+                    'ace' => array(
+                        'src' => 'public/packages/fancy/ace/js/vendor/ace/ace.js',
+                        'in_admin' => true
+                    ),
+                    'ace-textarea' => array(
+                        'src' => 'public/packages/fancy/ace/js/vendor/jquery-ace-textarea.js',
+                        'in_admin' => true
+                    ),
 
-                'fancy-ace' => array(
-                    'src' => 'public/packages/fancy/ace/js/plugin.js',
-                    'in_admin' => true
-                )
-            );
-        });
+                    'fancy-ace' => array(
+                        'src' => 'public/packages/fancy/ace/js/plugin.js',
+                        'in_admin' => true
+                    )
+                );
+            });
+        }
 	}
 
 	/**
